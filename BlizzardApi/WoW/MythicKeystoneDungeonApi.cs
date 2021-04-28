@@ -21,8 +21,13 @@ namespace BlizzardApi.WoW.GameData
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddHeader("authorization", $"Bearer {token}");
             IRestResponse response = await client.ExecuteAsync(request);
+            MythicKeystoneDungeon returnValue = new();
 
-            MythicKeystoneDungeon returnValue = JsonConvert.DeserializeObject<MythicKeystoneDungeon>(response.Content);
+            // Anything in the 200 range is considered an ok response but anything other than 200 means you should investigate further.
+            if ((int)response.StatusCode == 200)
+            {
+                returnValue = JsonConvert.DeserializeObject<MythicKeystoneDungeon>(response.Content);
+            }
 
             return new Tuple<HttpStatusCode, MythicKeystoneDungeon>(response.StatusCode,returnValue);
         }
@@ -39,7 +44,7 @@ namespace BlizzardApi.WoW.GameData
             {
                 if (Dungeons != null)
                 {
-                    return $"Links:{Links}" + System.Environment.NewLine + $"{Dungeons.Count}";
+                    return $"Links:{Links.Self.Href.ToString()}" + System.Environment.NewLine + String.Join(", ", Dungeons);
                 } else
                 {
                     return "Empty";
@@ -57,6 +62,11 @@ namespace BlizzardApi.WoW.GameData
 
             [JsonProperty("id")]
             public long Id { get; set; }
+
+            public override string ToString()
+            {
+                return $"[ID:{Id}] {Name}";
+            }
         }
 
         public partial class Self

@@ -15,7 +15,8 @@ namespace BlizzardApi
 
             var x = MythicKeystoneDungeonApi.GetMythicKeystoneDungeon(accessToken, Base.Region.US, Base.Locale.EN_US).Result;
 
-            Console.WriteLine(x.ToString());
+            Console.WriteLine("Status Code: " + x.Item1.ToString());
+            Console.WriteLine("Result: " + x.Item2.ToString());
             Console.Read();
         }
     }
