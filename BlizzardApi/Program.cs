@@ -1,6 +1,6 @@
-﻿using System;
-using BlizzardApi.WoW;
+﻿using BlizzardApi.WoW;
 using BlizzardApi.WoW.GameData;
+using System;
 using System.Configuration;
 
 namespace BlizzardApi

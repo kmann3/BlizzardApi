@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RestSharp;
+using System;
+using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace BlizzardApi.WoW
 {
