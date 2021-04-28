@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -13,15 +15,10 @@ namespace BlizzardApi.WoW.GameData
         {
             string clientString = $"https://{region.ToString()}.api.blizzard.com/data/wow/connected-realm/{connectedRealmId}/mythic-leaderboard/{dungeonId}/period/{period}?namespace=dynamic-{region.ToString()}&locale={locale.ToString()}&access_token={token}";
 
-            var client = new RestClient(clientString);
-            var request = new RestRequest(Method.GET);
-            request.AddHeader("cache-control", "no-cache");
-            request.AddHeader("content-type", "application/x-www-form-urlencoded");
-            request.AddHeader("authorization", $"Bearer {token}");
-            IRestResponse response = await client.ExecuteAsync(request);
+            IRestResponse response = await Util.RequestHandler.SendRequest(clientString, token);
             MythicKeystonePeriodsIndex returnValue = new();
 
-            // Anything in the 200 range is considered an ok response but anything other than 200 means you should investigate further.
+            // Anything in the 200 range is considered an acceptable response but anything other than 200 exactly means you should investigate further. Could be cached, could be delayed, could be all sorts of things...
             if ((int)response.StatusCode == 200)
             {
                 returnValue = JsonConvert.DeserializeObject<MythicKeystonePeriodsIndex>(response.Content);

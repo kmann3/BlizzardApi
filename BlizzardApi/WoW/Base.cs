@@ -24,32 +24,22 @@ namespace BlizzardApi.WoW
 
         private static string GetAuthorizeUri(Region r)
         {
-            switch (r)
+            return r switch
             {
-                case Region.APAC:
-                case Region.EU:
-                case Region.US:
-                    return $"https://{r.ToString()}.battle.net/oauth/authorize";
-                case Region.CN:
-                    return "https://www.battlenet.com.cn/oauth/authorize";
-                default:
-                    throw new Exception("Unknown region for auth.");
-            }
+                Region.APAC or Region.EU or Region.US => $"https://{r.ToString()}.battle.net/oauth/authorize",
+                Region.CN => "https://www.battlenet.com.cn/oauth/authorize",
+                _ => throw new Exception("Unknown region for auth."),
+            };
         }
 
         private static string GetTokenUri(Region r)
         {
-            switch (r)
+            return r switch
             {
-                case Region.APAC:
-                case Region.EU:
-                case Region.US:
-                    return $"https://{r.ToString()}.battle.net/oauth/token";
-                case Region.CN:
-                    return "https://www.battlenet.com.cn/oauth/token";
-                default:
-                    throw new Exception("Unknown region for token.");
-            }
+                Region.APAC or Region.EU or Region.US => $"https://{r.ToString()}.battle.net/oauth/token",
+                Region.CN => "https://www.battlenet.com.cn/oauth/token",
+                _ => throw new Exception("Unknown region for token."),
+            };
         }
 
         public static async Task<string> GetAuthToken(Region region, string clientId, string clientSecret)
@@ -61,8 +51,6 @@ namespace BlizzardApi.WoW
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddParameter($"application/x-www-form-urlencoded", $"grant_type=client_credentials&client_id={clientId}&client_secret={clientSecret}", ParameterType.RequestBody);
             IRestResponse response = await client.ExecuteAsync(request);
-
-            Console.WriteLine($"Getting Token: {response.Content}");
 
             var tokenResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(response.Content);
 
