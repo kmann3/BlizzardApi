@@ -13,7 +13,7 @@ namespace BlizzardApi.WoW.GameData
     public class MythicKeystoneDungeonApi
     {
         /// <summary>
-        /// Gets the MythicKeystoneDungeon data.
+        /// 
         /// </summary>
         /// <returns></returns>
         public static async Task<MythicKeystoneDungeon> GetMythicKeystoneDungeon()
@@ -22,7 +22,7 @@ namespace BlizzardApi.WoW.GameData
         }
 
         /// <summary>
-        /// Gets the MythicKeystoneDungeon data.
+        /// 
         /// </summary>
         /// <param name="locale"></param>
         /// <param name="region"></param>
@@ -31,7 +31,6 @@ namespace BlizzardApi.WoW.GameData
         public static async Task<MythicKeystoneDungeon> GetMythicKeystoneDungeon(Base.Locale locale, Base.Region region, string token)
         {
             string clientString = $"https://{region.ToString()}.api.blizzard.com/data/wow/mythic-keystone/dungeon/index?namespace=dynamic-{region.ToString()}&locale={locale.ToString()}&access_token={token}";
-
             return await Util.RequestHandler.ParseJson<MythicKeystoneDungeon>(clientString, token);
         }
 

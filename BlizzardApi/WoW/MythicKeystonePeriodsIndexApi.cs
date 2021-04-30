@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,27 +8,61 @@ using System.Threading.Tasks;
 
 namespace BlizzardApi.WoW.GameData
 {
+    /// <summary>
+    /// MythicKeystonePeriodsIndexApi call class.
+    /// </summary>
+    /// <see cref="https://develop.battle.net/documentation/world-of-warcraft/game-data-apis"/>
     public class MythicKeystonePeriodsIndexApi
     {
-        public static async Task<Tuple<HttpStatusCode, MythicKeystonePeriodsIndex>> GetMythicKeystonePeriodsIndex(string token, Base.Region region, int connectedRealmId, int dungeonId, int period, Base.Locale locale)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connectedRealmId"></param>
+        /// <param name="dungeonId"></param>
+        /// <param name="period"></param>
+        /// <returns></returns>
+        public static async Task<MythicKeystonePeriodsIndex> GetMythicKeystonePeriodsIndex(int connectedRealmId, int dungeonId, int period)
         {
-            string clientString = $"https://{region.ToString()}.api.blizzard.com/data/wow/connected-realm/{connectedRealmId}/mythic-leaderboard/{dungeonId}/period/{period}?namespace=dynamic-{region.ToString()}&locale={locale.ToString()}&access_token={token}";
-
-            IRestResponse response = await Util.RequestHandler.SendRequest(clientString, token);
-            MythicKeystonePeriodsIndex returnValue = new();
-
-            // Anything in the 200 range is considered an acceptable response but anything other than 200 exactly means you should investigate further. Could be cached, could be delayed, could be all sorts of things...
-            if ((int)response.StatusCode == 200)
-            {
-                returnValue = JsonConvert.DeserializeObject<MythicKeystonePeriodsIndex>(response.Content);
-            }
-
-            //return new Tuple<HttpStatusCode, MythicKeystonePeriodsIndex>(response.StatusCode, returnValue);
-            throw new NotImplementedException();
+            return await GetMythicKeystonePeriodsIndex(Settings.Locale, Settings.Region, Settings.Token, connectedRealmId, dungeonId, period);
         }
 
-        public partial class MythicKeystonePeriodsIndex
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="locale"></param>
+        /// <param name="region"></param>
+        /// <param name="token"></param>
+        /// <param name="connectedRealmId"></param>
+        /// <param name="dungeonId"></param>
+        /// <param name="period"></param>
+        /// <returns></returns>
+        public static async Task<MythicKeystonePeriodsIndex> GetMythicKeystonePeriodsIndex(Base.Locale locale, Base.Region region, string token, int connectedRealmId, int dungeonId, int period)
         {
+            string clientString = $"https://{region.ToString()}.api.blizzard.com/data/wow/connected-realm/{connectedRealmId}/mythic-leaderboard/{dungeonId}/period/{period}?namespace=dynamic-{region.ToString()}&locale={locale.ToString()}&access_token={token}";
+            return await Util.RequestHandler.ParseJson<MythicKeystonePeriodsIndex>(clientString, token);
+        }
+
+        #region JSON Classes
+        /// <summary>
+        /// Strongly typed JSON result
+        /// </summary>
+        public partial class MythicKeystonePeriodsIndex : Util.RequestHandler.IJsonResponse
+        {
+            /// <summary>
+            /// Returned JSON data, raw.
+            /// If the query failed JsonData will be an empty string.
+            /// If they change the JSON results and the class isn't populating, this is where to start on fixing it.
+            /// </summary>
+            public string JsonData { get; set; }
+
+            /// <summary>
+            /// Returned StatusCode. Check for (int)200 for OK response to know if this class is populated.
+            /// If you goofed your token, you will get (int)401 for Unauthorized.
+            /// If the URL is wrong, somehow, you will get (int)404 for Not Found.
+            /// If you the parameters sent are incorrect you will get (int)403 Forbidden
+            /// </summary>
+            public HttpStatusCode HttpStatusCode { get; set; }
+
             [JsonProperty("_links")]
             public Links Links { get; set; }
 
@@ -228,5 +261,6 @@ namespace BlizzardApi.WoW.GameData
 
             public static readonly TypeEnumConverter Singleton = new TypeEnumConverter();
         }
+        #endregion JSON Classes
     }
 }
