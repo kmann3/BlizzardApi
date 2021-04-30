@@ -55,7 +55,7 @@
         }
 
         /// <summary>
-        /// Token to use for all queries. This absolutely must be set.
+        /// Token to use for all queries.
         /// </summary>
         public static string Token { get; set; }
 
