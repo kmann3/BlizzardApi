@@ -2,6 +2,8 @@
 using System;
 using System.Configuration;
 using BlizzardApi.WoW.GameData;
+using System.Net;
+using System.IO;
 
 namespace BlizzardApi
 {
@@ -27,35 +29,52 @@ namespace BlizzardApi
             //==============================
 
             // Helper method for me pulling json so I can convert it to a strongly typed class.
-            //GetAndSaveJsonDataForApi();
-            //Console.WriteLine("Done");
+            GetAndSaveJsonDataForApi(accessToken);
+            Console.WriteLine("Done");
+            Console.Read();
 
             //==============================
             // Example usage
             //==============================
-            var x = PvpLeaderboardApi.GetPvpLeaderboardApi(27, PvpLeaderboardApi.PvpBracket.Three).Result;
-            if ((int)x.HttpStatusCode == 200)
-            {
-                Console.WriteLine("Result: " + x.ToString());
-                Console.WriteLine("JSON: " + x.JsonData);
-            }
-            else
-            {
-                Console.WriteLine("FAILED: PvpLeaderboardApi");
-            }
+            //var x = PvpLeaderboardApi.GetPvpLeaderboardApi(27, PvpLeaderboardApi.PvpBracket.Three).Result;
+            //if ((int)x.HttpStatusCode == 200)
+            //{
+            //    Console.WriteLine("Result: " + x.ToString());
+            //    Console.WriteLine("JSON: " + x.JsonData);
+            //}
+            //else
+            //{
+            //    Console.WriteLine("FAILED: PvpLeaderboardApi");
+            //}
 
-            Console.WriteLine("Tasks complete. fin");
-            Console.Read();
+            //Console.WriteLine("Tasks complete. fin");
+            //Console.Read();
         }
 
         /// <summary>
         /// Helper method to help me pull JSON data to generate classes.
         /// </summary>
-        public static void GetAndSaveJsonDataForApi()
+        public static async void GetAndSaveJsonDataForApi(string token)
         {
-            // Do stuff
-            // Save JSON to file
-            // Open file.
+            string clientString = $"https://us.api.blizzard.com/data/wow/pvp-season/index?namespace=dynamic-us&locale=en_US&access_token={token}";
+
+            var x = await Util.RequestHandler.ParseJson<Foo>(clientString, token);
+
+            string _namespace = "BlizzardApi.WoW.GameData";
+            string _className = ("PvP Seasons Index ");
+
+            //string output = _namespace + System.Environment.NewLine + _className.Remove(' ') + System.Environment.NewLine + x.JsonData;
+            string output = $"{_namespace}\r\n{_className.Replace(" ", "")}\r\n----------------\r\n{x.JsonData}";
+            File.WriteAllText("json_output.txt", output);
+            System.Diagnostics.ProcessStartInfo startInfo = new(@"C:\Program Files\Notepad++\notepad++.exe");
+            startInfo.Arguments = "json_output.txt";
+            System.Diagnostics.Process.Start(startInfo);
+        }
+
+        public class Foo : Util.RequestHandler.IJsonResponse
+        {
+            public string JsonData { get; set; }
+            public HttpStatusCode HttpStatusCode { get; set; }
         }
     }
 }
