@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <FileVersion>2021.4.28.14</FileVersion>
+    <FileVersion>2021.4.30.36</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

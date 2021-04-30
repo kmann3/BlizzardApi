@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -7,26 +6,56 @@ using System.Threading.Tasks;
 
 namespace BlizzardApi.WoW.GameData
 {
+    /// <summary>
+    /// MythicKeystoneDguneonApi call class.
+    /// </summary>
+    /// <see cref="https://develop.battle.net/documentation/world-of-warcraft/game-data-apis"/>
     public class MythicKeystoneDungeonApi
     {
-        public static async Task<Tuple<HttpStatusCode,MythicKeystoneDungeon>> GetMythicKeystoneDungeon(string token, Base.Region region, Base.Locale locale)
+        /// <summary>
+        /// Gets the MythicKeystoneDungeon data.
+        /// </summary>
+        /// <returns></returns>
+        public static async Task<MythicKeystoneDungeon> GetMythicKeystoneDungeon()
+        {
+            return await GetMythicKeystoneDungeon(Settings.Locale, Settings.Region, Settings.Token);
+        }
+
+        /// <summary>
+        /// Gets the MythicKeystoneDungeon data.
+        /// </summary>
+        /// <param name="locale"></param>
+        /// <param name="region"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static async Task<MythicKeystoneDungeon> GetMythicKeystoneDungeon(Base.Locale locale, Base.Region region, string token)
         {
             string clientString = $"https://{region.ToString()}.api.blizzard.com/data/wow/mythic-keystone/dungeon/index?namespace=dynamic-{region.ToString()}&locale={locale.ToString()}&access_token={token}";
 
-            IRestResponse response = await Util.RequestHandler.SendRequest(clientString, token);
-            MythicKeystoneDungeon returnValue = new();
-
-            // Anything in the 200 range is considered an acceptable response but anything other than 200 exactly means you should investigate further. Could be cached, could be delayed, could be all sorts of things...
-            if ((int)response.StatusCode == 200)
-            {
-                returnValue = JsonConvert.DeserializeObject<MythicKeystoneDungeon>(response.Content);
-            }
-
-            return new Tuple<HttpStatusCode, MythicKeystoneDungeon>(response.StatusCode,returnValue);
+            return await Util.RequestHandler.ParseJson<MythicKeystoneDungeon>(clientString, token);
         }
 
-        public partial class MythicKeystoneDungeon
+        #region JSON Classes
+        /// <summary>
+        /// Strongly typed JSON result
+        /// </summary>
+        public partial class MythicKeystoneDungeon : Util.RequestHandler.IJsonResponse
         {
+            /// <summary>
+            /// Returned JSON data, raw.
+            /// If the query failed JsonData will be an empty string.
+            /// If they change the JSON results and the class isn't populating, this is where to start on fixing it.
+            /// </summary>
+            public string JsonData { get; set; }
+
+            /// <summary>
+            /// Returned StatusCode. Check for (int)200 for OK response to know if this class is populated.
+            /// If you goofed your token, you will get (int)401 for Unauthorized.
+            /// If the URL is wrong, somehow, you will get (int)404 for Not Found.
+            /// If you the parameters sent are incorrect you will get (int)403 Forbidden
+            /// </summary>
+            public HttpStatusCode HttpStatusCode { get; set; }
+
             [JsonProperty("_links")]
             public Links Links { get; set; }
 
@@ -37,7 +66,7 @@ namespace BlizzardApi.WoW.GameData
             {
                 if (Dungeons != null)
                 {
-                    return $"Links:{Links.Self.Href.ToString()}" + System.Environment.NewLine + String.Join(", ", Dungeons);
+                    return String.Join(", ", Dungeons);
                 } else
                 {
                     return "Empty";
@@ -73,5 +102,6 @@ namespace BlizzardApi.WoW.GameData
             [JsonProperty("self")]
             public Self Self { get; set; }
         }
+        #endregion JSON Classes
     }
 }
