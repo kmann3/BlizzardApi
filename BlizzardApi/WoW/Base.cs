@@ -3,6 +3,7 @@ using RestSharp;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using BlizzardApi.Util;
 
 namespace BlizzardApi.WoW
 {
@@ -26,7 +27,7 @@ namespace BlizzardApi.WoW
         {
             return r switch
             {
-                Region.APAC or Region.EU or Region.US => $"https://{r.ToString()}.battle.net/oauth/authorize",
+                Region.APAC or Region.EU or Region.US => $"https://{r.ToDescriptionString()}.battle.net/oauth/authorize",
                 Region.CN => "https://www.battlenet.com.cn/oauth/authorize",
                 _ => throw new Exception("Unknown region for auth."),
             };
@@ -36,7 +37,7 @@ namespace BlizzardApi.WoW
         {
             return r switch
             {
-                Region.APAC or Region.EU or Region.US => $"https://{r.ToString()}.battle.net/oauth/token",
+                Region.APAC or Region.EU or Region.US => $"https://{r.ToDescriptionString()}.battle.net/oauth/token",
                 Region.CN => "https://www.battlenet.com.cn/oauth/token",
                 _ => throw new Exception("Unknown region for token."),
             };

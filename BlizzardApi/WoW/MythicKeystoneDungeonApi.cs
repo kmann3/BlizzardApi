@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using BlizzardApi.Util;
 
 namespace BlizzardApi.WoW.GameData
 {
@@ -30,7 +31,7 @@ namespace BlizzardApi.WoW.GameData
         /// <returns></returns>
         public static async Task<MythicKeystoneDungeon> GetMythicKeystoneDungeon(Base.Locale locale, Base.Region region, string token)
         {
-            string clientString = $"https://{region.ToString()}.api.blizzard.com/data/wow/mythic-keystone/dungeon/index?namespace=dynamic-{region.ToString()}&locale={locale.ToString()}&access_token={token}";
+            string clientString = $"https://{region.ToDescriptionString()}.api.blizzard.com/data/wow/mythic-keystone/dungeon/index?namespace=dynamic-{region.ToDescriptionString()}&locale={locale.ToDescriptionString()}&access_token={token}";
             return await Util.RequestHandler.ParseJson<MythicKeystoneDungeon>(clientString, token);
         }
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
+using BlizzardApi.Util;
 
 namespace BlizzardApi.WoW.GameData
 {
@@ -38,7 +39,7 @@ namespace BlizzardApi.WoW.GameData
         /// <returns></returns>
         public static async Task<MythicKeystonePeriodsIndex> GetMythicKeystonePeriodsIndex(Base.Locale locale, Base.Region region, string token, int connectedRealmId, int dungeonId, int period)
         {
-            string clientString = $"https://{region.ToString()}.api.blizzard.com/data/wow/connected-realm/{connectedRealmId}/mythic-leaderboard/{dungeonId}/period/{period}?namespace=dynamic-{region.ToString()}&locale={locale.ToString()}&access_token={token}";
+            string clientString = $"https://{region.ToDescriptionString()}.api.blizzard.com/data/wow/connected-realm/{connectedRealmId}/mythic-leaderboard/{dungeonId}/period/{period}?namespace=dynamic-{region.ToDescriptionString()}&locale={locale.ToDescriptionString()}&access_token={token}";
             return await Util.RequestHandler.ParseJson<MythicKeystonePeriodsIndex>(clientString, token);
         }
 

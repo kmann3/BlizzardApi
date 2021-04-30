@@ -1,6 +1,7 @@
 ﻿using BlizzardApi.WoW;
 using System;
 using System.Configuration;
+using BlizzardApi.WoW.GameData;
 
 namespace BlizzardApi
 {
@@ -26,23 +27,25 @@ namespace BlizzardApi
             //==============================
 
             // Helper method for me pulling json so I can convert it to a strongly typed class.
-            GetAndSaveJsonDataForApi();
+            //GetAndSaveJsonDataForApi();
+            //Console.WriteLine("Done");
 
             //==============================
             // Example usage
             //==============================
-            //var x = MythicKeystoneDungeonApi.GetMythicKeystoneDungeon().Result;
-            //if((int)x.HttpStatusCode == 200)
-            //{
-            //    Console.WriteLine("Result: " + x.ToString());
-            //    Console.WriteLine("JSON: " + x.JsonData);
-            //} else
-            //{
-            //    Console.WriteLine("FAILED: MythicKeystoneDungeonApi");
-            //}
+            var x = PvpLeaderboardApi.GetPvpLeaderboardApi(27, PvpLeaderboardApi.PvpBracket.Three).Result;
+            if ((int)x.HttpStatusCode == 200)
+            {
+                Console.WriteLine("Result: " + x.ToString());
+                Console.WriteLine("JSON: " + x.JsonData);
+            }
+            else
+            {
+                Console.WriteLine("FAILED: PvpLeaderboardApi");
+            }
 
-            //Console.WriteLine("Tasks complete. fin");
-            //Console.Read();
+            Console.WriteLine("Tasks complete. fin");
+            Console.Read();
         }
 
         /// <summary>
