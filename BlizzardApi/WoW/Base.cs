@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using BlizzardApi.Util;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using BlizzardApi.Util;
 
 namespace BlizzardApi.WoW
 {

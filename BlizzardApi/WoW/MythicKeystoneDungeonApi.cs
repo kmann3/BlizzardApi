@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using BlizzardApi.Util;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using BlizzardApi.Util;
 
 namespace BlizzardApi.WoW.GameData
 {

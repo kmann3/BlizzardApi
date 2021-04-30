@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BlizzardApi.WoW
+﻿namespace BlizzardApi.WoW
 {
     /// <summary>
     /// All WoW API settings will reference this file.
