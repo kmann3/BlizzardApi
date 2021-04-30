@@ -29,30 +29,30 @@ namespace BlizzardApi
             //==============================
 
             // Helper method for me pulling json so I can convert it to a strongly typed class.
-            GetAndSaveJsonDataForApi(accessToken);
-            Console.WriteLine("Done");
-            Console.Read();
+            //GetAndSaveJsonDataForApi(accessToken);
+
 
             //==============================
             // Example usage
             //==============================
-            //var x = PvpLeaderboardApi.GetPvpLeaderboardApi(27, PvpLeaderboardApi.PvpBracket.Three).Result;
-            //if ((int)x.HttpStatusCode == 200)
-            //{
-            //    Console.WriteLine("Result: " + x.ToString());
-            //    Console.WriteLine("JSON: " + x.JsonData);
-            //}
-            //else
-            //{
-            //    Console.WriteLine("FAILED: PvpLeaderboardApi");
-            //}
+            var x = PvpLeaderboardApi.GetPvpLeaderboardApi(27, PvpLeaderboardApi.PvpBracket.Three).Result;
+            if ((int)x.HttpStatusCode == 200)
+            {
+                Console.WriteLine("Result: " + x.ToString());
+                Console.WriteLine("JSON: " + x.JsonData);
+            }
+            else
+            {
+                Console.WriteLine("FAILED: PvpLeaderboardApi");
+            }
 
-            //Console.WriteLine("Tasks complete. fin");
-            //Console.Read();
+            Console.WriteLine("Tasks complete. fin");
+            Console.Read();
         }
 
         /// <summary>
         /// Helper method to help me pull JSON data to generate classes.
+        /// This is purely to help me create code and won't be useful for anyone else actually using the API's.
         /// </summary>
         public static async void GetAndSaveJsonDataForApi(string token)
         {
