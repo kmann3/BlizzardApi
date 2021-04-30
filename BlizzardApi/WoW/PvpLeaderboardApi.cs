@@ -11,13 +11,31 @@ using BlizzardApi.Util;
 
 namespace BlizzardApi.WoW.GameData
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class PvpLeaderboardApi
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pvpSeasonId"></param>
+        /// <param name="pvpBracket"></param>
+        /// <returns></returns>
         public static async Task<PvpLeaderboard> GetPvpLeaderboardApi(int pvpSeasonId, PvpBracket pvpBracket)
         {
             return await GetPvpLeaderboardApi(Settings.Locale, Settings.Region, Settings.Token, pvpSeasonId, pvpBracket);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="locale"></param>
+        /// <param name="region"></param>
+        /// <param name="token"></param>
+        /// <param name="pvpSeasonId"></param>
+        /// <param name="pvpBracket"></param>
+        /// <returns></returns>
         public static async Task<PvpLeaderboard> GetPvpLeaderboardApi(Base.Locale locale, Base.Region region, string token, int pvpSeasonId, PvpBracket pvpBracket)
         {
             string clientString = $"https://{region.ToDescriptionString()}.api.blizzard.com/data/wow/pvp-season/{pvpSeasonId}/pvp-leaderboard/{pvpBracket.ToDescriptionString()}?namespace=dynamic-{region.ToDescriptionString()}&locale={locale.ToDescriptionString()}&access_token={token}";
