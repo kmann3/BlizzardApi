@@ -11,8 +11,9 @@ using System.Threading.Tasks;
 namespace BlizzardApi.WoW.GameData
 {
     /// <summary>
-    /// 
+    /// Pvp Leaderboard
     /// </summary>
+    /// <see cref="https://develop.battle.net/documentation/world-of-warcraft/game-data-apis"/>
     public class PvpLeaderboardApi
     {
         /// <summary>
@@ -21,7 +22,7 @@ namespace BlizzardApi.WoW.GameData
         /// <param name="pvpSeasonId"></param>
         /// <param name="pvpBracket"></param>
         /// <returns></returns>
-        public static async Task<PvpLeaderboard> GetPvpLeaderboardApi(int pvpSeasonId, PvpBracket pvpBracket)
+        public static async Task<JSON_PvpLeaderboard> GetPvpLeaderboardApi(int pvpSeasonId, PvpBracket pvpBracket)
         {
             return await GetPvpLeaderboardApi(Settings.Locale, Settings.Region, Settings.Token, pvpSeasonId, pvpBracket);
         }
@@ -35,10 +36,10 @@ namespace BlizzardApi.WoW.GameData
         /// <param name="pvpSeasonId"></param>
         /// <param name="pvpBracket"></param>
         /// <returns></returns>
-        public static async Task<PvpLeaderboard> GetPvpLeaderboardApi(Base.Locale locale, Base.Region region, string token, int pvpSeasonId, PvpBracket pvpBracket)
+        public static async Task<JSON_PvpLeaderboard> GetPvpLeaderboardApi(Base.Locale locale, Base.Region region, string token, int pvpSeasonId, PvpBracket pvpBracket)
         {
             string clientString = $"https://{region.ToDescriptionString()}.api.blizzard.com/data/wow/pvp-season/{pvpSeasonId}/pvp-leaderboard/{pvpBracket.ToDescriptionString()}?namespace=dynamic-{region.ToDescriptionString()}&locale={locale.ToDescriptionString()}&access_token={token}";
-            return await Util.RequestHandler.ParseJson<PvpLeaderboard>(clientString, token);
+            return await Util.RequestHandler.ParseJson<JSON_PvpLeaderboard>(clientString, token);
         }
 
         public enum PvpBracket
@@ -53,7 +54,7 @@ namespace BlizzardApi.WoW.GameData
             RBG            
         }
 
-        public partial class PvpLeaderboard : Util.RequestHandler.IJsonResponse
+        public partial class JSON_PvpLeaderboard : RequestHandler.IJsonResponse
         {
             /// <summary>
             /// Returned JSON data, raw.
@@ -71,113 +72,115 @@ namespace BlizzardApi.WoW.GameData
             public HttpStatusCode HttpStatusCode { get; set; }
 
             [JsonProperty("_links")]
-            public Links Links { get; set; }
+            public JSON_Links Links { get; set; }
 
             [JsonProperty("season")]
-            public Season Season { get; set; }
+            public JSON_Season Season { get; set; }
 
             [JsonProperty("name")]
             public string Name { get; set; }
 
             [JsonProperty("bracket")]
-            public Bracket Bracket { get; set; }
+            public JSON_Bracket Bracket { get; set; }
 
             [JsonProperty("entries")]
-            public List<Entry> Entries { get; set; }
+            public List<JSON_Entry> Entries { get; set; }
+
+            public partial class JSON_Bracket
+            {
+                [JsonProperty("id")]
+                public long Id { get; set; }
+
+                [JsonProperty("type")]
+                public string Type { get; set; }
+            }
+
+            public partial class JSON_Entry
+            {
+                [JsonProperty("character")]
+                public JSON_Character Character { get; set; }
+
+                [JsonProperty("faction")]
+                public JSON_Faction Faction { get; set; }
+
+                [JsonProperty("rank")]
+                public long Rank { get; set; }
+
+                [JsonProperty("rating")]
+                public long Rating { get; set; }
+
+                [JsonProperty("season_match_statistics")]
+                public JSON_SeasonMatchStatistics SeasonMatchStatistics { get; set; }
+
+                [JsonProperty("tier")]
+                public JSON_Season Tier { get; set; }
+            }
+
+            public partial class JSON_Character
+            {
+                [JsonProperty("name")]
+                public string Name { get; set; }
+
+                [JsonProperty("id")]
+                public long Id { get; set; }
+
+                [JsonProperty("realm")]
+                public JSON_Realm Realm { get; set; }
+            }
+
+            public partial class JSON_Realm
+            {
+                [JsonProperty("key")]
+                public JSON_Self Key { get; set; }
+
+                [JsonProperty("id")]
+                public long Id { get; set; }
+
+                [JsonProperty("slug")]
+                public string Slug { get; set; }
+            }
+
+            public partial class JSON_Self
+            {
+                [JsonProperty("href")]
+                public Uri Href { get; set; }
+            }
+
+            public partial class Faction
+            {
+                [JsonProperty("type")]
+                public TypeEnum Type { get; set; }
+            }
+
+            public partial class JSON_SeasonMatchStatistics
+            {
+                [JsonProperty("played")]
+                public long Played { get; set; }
+
+                [JsonProperty("won")]
+                public long Won { get; set; }
+
+                [JsonProperty("lost")]
+                public long Lost { get; set; }
+            }
+
+            public partial class JSON_Season
+            {
+                [JsonProperty("key")]
+                public JSON_Self Key { get; set; }
+
+                [JsonProperty("id")]
+                public long Id { get; set; }
+            }
+
+            public partial class JSON_Links
+            {
+                [JsonProperty("self")]
+                public JSON_Self Self { get; set; }
+            }
         }
 
-        public partial class Bracket
-        {
-            [JsonProperty("id")]
-            public long Id { get; set; }
-
-            [JsonProperty("type")]
-            public string Type { get; set; }
-        }
-
-        public partial class Entry
-        {
-            [JsonProperty("character")]
-            public Character Character { get; set; }
-
-            [JsonProperty("faction")]
-            public Faction Faction { get; set; }
-
-            [JsonProperty("rank")]
-            public long Rank { get; set; }
-
-            [JsonProperty("rating")]
-            public long Rating { get; set; }
-
-            [JsonProperty("season_match_statistics")]
-            public SeasonMatchStatistics SeasonMatchStatistics { get; set; }
-
-            [JsonProperty("tier")]
-            public Season Tier { get; set; }
-        }
-
-        public partial class Character
-        {
-            [JsonProperty("name")]
-            public string Name { get; set; }
-
-            [JsonProperty("id")]
-            public long Id { get; set; }
-
-            [JsonProperty("realm")]
-            public Realm Realm { get; set; }
-        }
-
-        public partial class Realm
-        {
-            [JsonProperty("key")]
-            public Self Key { get; set; }
-
-            [JsonProperty("id")]
-            public long Id { get; set; }
-
-            [JsonProperty("slug")]
-            public string Slug { get; set; }
-        }
-
-        public partial class Self
-        {
-            [JsonProperty("href")]
-            public Uri Href { get; set; }
-        }
-
-        public partial class Faction
-        {
-            [JsonProperty("type")]
-            public TypeEnum Type { get; set; }
-        }
-
-        public partial class SeasonMatchStatistics
-        {
-            [JsonProperty("played")]
-            public long Played { get; set; }
-
-            [JsonProperty("won")]
-            public long Won { get; set; }
-
-            [JsonProperty("lost")]
-            public long Lost { get; set; }
-        }
-
-        public partial class Season
-        {
-            [JsonProperty("key")]
-            public Self Key { get; set; }
-
-            [JsonProperty("id")]
-            public long Id { get; set; }
-        }
-
-        public partial class Links
-        {
-            [JsonProperty("self")]
-            public Self Self { get; set; }
-        }
+        
 
         public enum TypeEnum { Alliance, Horde };
 

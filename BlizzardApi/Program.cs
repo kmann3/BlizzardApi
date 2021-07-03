@@ -11,6 +11,11 @@ namespace BlizzardApi
     {
         public static void Main()
         {
+            // 1 - Get list of people in PvP
+            // 2 - Get talent selections
+
+
+
             // Bookmark for me.
             //https://develop.battle.net/documentation/world-of-warcraft/game-data-apis
 
